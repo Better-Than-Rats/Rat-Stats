@@ -1,25 +1,9 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { GoogleMap, useJsApiLoader, InfoWindow, Marker } from '@react-google-maps/api';
-import { Avatar } from 'flowbite-react';
 import SightingForm from './SightingForm.jsx';
-import  { icon } from 'leaflet'
 import { useNavigate, Link } from 'react-router-dom';
-
-// for redux
 import { useDispatch, useSelector } from 'react-redux';
-import {
-    UPDATE_LOCATION,
-    UPDATE_USER,
-} from '../Slices/sightingSlice';
-
-import {
-  updateUser,
-  updatePassword,
-  updateSightings,
-  updateProfile_Picture,
-  updateFavorite_Rat,
-  updateCreated_At,
-} from '../Slices/userSlice'
+import { updateLocation } from '../Slices/sightingSlice';
 
 const center = {
   lat: 40.747749,
@@ -35,7 +19,7 @@ function Homepage() {
   
   // state for the google map
   const [map, setMap] = useState(null);
-  const [info, setInfo] = useState(false);
+  const [postReqMade, setPostReqMade] = useState(false);
   const [infoLocation, setInfoLocation] = useState({lat: 0, lng: 0})
 
   // state for the markers to show up after you click
@@ -50,7 +34,6 @@ function Homepage() {
   // Functionality when map loads. Unique to maps api
   const onLoad = useCallback((map) => {
     // get and load map instance
-    console.log('loaded');
     const bounds = new window.google.maps.LatLngBounds(center);
     map.fitBounds(bounds);
     setMap(map)
@@ -59,7 +42,6 @@ function Homepage() {
 
   // functionality when map dismounts. Unique to maps api
   const onUnmount = useCallback((map) => {
-    console.log('unMounted');
     setMap(null);
   }, [])
 
@@ -70,58 +52,32 @@ function Homepage() {
    * Will return different events based on if the user clicked on a random point,
    * or if they clicked on one of our markers
    */
-  const handleMouseClick = (e) => {
+  const handleMouseClick = async function (e) {
     const location = e.latLng.toJSON(); // location of the mouse click
-    setInfo(true);
+    setPostReqMade(true);
     setInfoLocation(location);
+    dispatch(updateLocation(location));
+    console.log('CLICKLLLED: ', location);
 
-    // update this information in redux
-    dispatch(UPDATE_LOCATION(location));
+    try {
+      const response = await fetch('/sql', {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(location)
+        }).then(data => data.json());
+    } catch (error) {
+          console.log(error)
+    }
   }
 
 
   // use effect to update the user in sightings slice once homepage is reached
   useEffect(() => {
   // TODO: create markerList by fetching all the sightings from the database,
-  // and populating them into marker objects
-
-
-  // const userObj_testing = {
-  //   username: 'new',
-  //   password: '123',
-  //   number_sightings: 3,
-  //   favorite_rat: 'fat jody',
-  //   created_at: '2023-04-30'
-  // }
-
-  //   // Fetch the current user from state, 
-  //   // fetch('/user/login/', {
-  //   //   method: 'POST',
-  //   //   headers: {
-  //   //     'Content-Type': 'application/json',
-  //   //   },
-  //   //   body: JSON.stringify({username, password})
-  //   // })
-  //   // .then((res) => res.json())
-  //   // .then((res)=>{
-  //   //   console.log(res);
-  //   // })
-
-    // populate state object with fetched request
-    // dispatch(updateUser(userObj_testing.username))
-    // dispatch(updatePassword(userObj_testing.password))
-    // dispatch(updateSightings(userObj_testing.number_sightings));
-    // dispatch(updateFavorite_Rat(userObj_testing.favorite_rat));
-    // dispatch(updateCreated_At(userObj_testing.created_at));
-
-    // dispatch(UPDATE_USER(userObj_testing.username))
+  // and populating them into marker object
   },[])
-
-  function handleMarkerListClick(e) {
-    console.log(e);
-    // TODO
-    // when it's clicked on, look in the database for a specific position
-  }
 
   const addToMarkerList = (position) => {
     const newMarker = <Marker 
@@ -143,9 +99,7 @@ function Homepage() {
       <div className="flex flex-row w-screen h-1/6 justify-between items-end p-8 py-5">
         <h1 className="text-4xl text-gray-600">Welcome to Rat Stats!</h1>
         <div className="flex">
-          <Link to={'/profile'}>
-            <Avatar className="px-10" rounded={true} size="md"/>
-          </Link>
+        <Link to={'/'} className="flex border bg-col2 shadow rounded-xl p-2 w-10 justify-center"><p>Sign Out</p></Link>
         </div>
       </div>
       
@@ -168,11 +122,11 @@ function Homepage() {
         clickableIcons={false}
         onClick={handleMouseClick}>
           {markerList}
-          {info && <InfoWindow
+          {postReqMade && <InfoWindow
           key={`${infoLocation.lat}-${infoLocation.lng}`} // Add this line
           position={infoLocation}>
             <div>
-              <SightingForm username={username} addToMarkerList={addToMarkerList} marketListInfo={setMarkerListInfo}/>
+              <SightingForm addToMarkerList={addToMarkerList}/>
             </div>
           </InfoWindow>}
         </GoogleMap>
