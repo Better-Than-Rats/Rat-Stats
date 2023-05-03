@@ -32,7 +32,7 @@ export default function Login() {
     .then((parsed) => {
       if(parsed.username) {
         // redirect here
-        navigate('/homepage');
+        // navigate('/homepage');
       }
     })
     .catch(error => {
