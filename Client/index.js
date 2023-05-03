@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import './styles.css';
-// import ReactDOM from 'react-dom/client';
+import ReactDOM from 'react-dom/client';
 import Login from './Components/Login';
 import Homepage from './Components/Homepage';
 import Signup from './Components/Signup';
+
 import store from './store.js';
 import { Provider } from 'react-redux';
 
