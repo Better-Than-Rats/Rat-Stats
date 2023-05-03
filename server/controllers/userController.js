@@ -17,6 +17,7 @@ userController.createUser = async (req, res, next) => {
 		const user = await User.create({ username, password });
 
 		res.locals.user = user;
+		console.log("entered user creatwer middleware");
 
 		return next();
 	} catch (err) {

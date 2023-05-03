@@ -1,19 +1,25 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { updateUser, updatePassword } from '../Slices/userSlice';
 
 export default function Signup() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [userProvidedPw, setUserProvidedPw] = useState('');
   const [userProvidedPwConfirm, setUserProvidedPwConfirm] = useState('');
 
-  const handleSignupClick = async () => {
+  const handleSignupClick = async (e) => {
+    e.preventDefault();
     const username = document.getElementById('Username').value;
-    const pw = document.getElementById('password').value;
-    const verified_pw = document.getElementById('verify-password').value;
+    const pw = document.getElementById('userProvidedPw').value;
+    const verified_pw = document.getElementById('verify-userProvidedPw').value;
+    console.log("all three: ", username, pw, verified_pw);
     try {
+      console.log("enters try");
       if (pw === verified_pw) {
-      const response = await fetch('/user/signup/', {
+        console.log("if condition met");
+      const response = await fetch('/user/signup', {
         method: "POST",
         headers: {
           'Content-Type': 'application/json',
@@ -21,6 +27,14 @@ export default function Signup() {
         body: JSON.stringify({ username: username, password: pw }),
       })
       const data = await response.json();
+      navigate('/homepage')
+      
+      // .then((data) => data.json())
+      // .then((parsed) => {
+      //   if(parsed.username) {
+      //     // redirect here
+      //     navigate('/homepage');
+      //   }
       console.log("signup post request successful! data is: ", data);
       } 
     } catch (err) {
