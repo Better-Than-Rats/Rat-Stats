@@ -7,21 +7,25 @@ export default function Signup() {
   const [password, setPassword] = useState('');
   const [verifyPassword, setVerifyPassword] = useState('');
 
-  const handleSignupClick = () => {
+  const handleSignupClick = async () => {
     const username = document.getElementById('Username').value;
-
-    if (password === verifyPassword) {
-      fetch('/user/signup/', {
+    const pw = document.getElementById('password').value;
+    const verified_pw = document.getElementById('verify-password').value;
+    try {
+      if (pw === verified_pw) {
+      const response = await fetch('/user/signup/', {
         method: "POST",
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ username: username, password: pw }),
       })
-      .catch(error => {
-        console.error('Error:', error);
-      });
-    } 
+      const data = await response.json();
+      console.log("signup post request successful! data is: ", data);
+      } 
+    } catch (err) {
+      console.log("handle signup failed");
+    }
   };
 
   return (
@@ -56,7 +60,7 @@ export default function Signup() {
                 required/>
               </div>
               <div className="flex flex-row justify-center p-4">
-                <a className="border shadow bg-green-500 justify-self-center" href={'/homepage'}>Create Account</a>
+                <a className="border shadow bg-green-500 justify-self-center" onClick={handleSignupClick} href={'/homepage'}>Create Account</a>
               </div>
             </div>
           </div>
