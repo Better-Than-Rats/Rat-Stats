@@ -10,7 +10,8 @@ router.get('/',cookieController.setCookie,(req,res)=> {
 })
 
 //signup
-router.use('/signup', userController.createUser,(req,res) => {
+router.post('/signup', userController.createUser,(req,res) => {
+  console.log("end of user router");
   res.status(200).redirect('http://localhost:8080/homepage');
 })
 
