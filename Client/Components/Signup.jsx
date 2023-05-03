@@ -15,7 +15,6 @@ export default function Signup() {
     const username = document.getElementById('Username').value;
     const pw = document.getElementById('userProvidedPw').value;
     const verified_pw = document.getElementById('verify-userProvidedPw').value;
-    //const nav = () => {navigate('/homepage')};
     console.log("all three: ", username, pw, verified_pw);
     try {
       console.log("enters try");
