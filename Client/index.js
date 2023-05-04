@@ -15,7 +15,7 @@ const router = createBrowserRouter([
 		element: <Login />,
 	},
 	{
-		path: 'http://localhost:8080/homepage',
+		path: '/homepage',
 		element: <Homepage />,
 	},
 	{

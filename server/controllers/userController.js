@@ -17,7 +17,7 @@ userController.createUser = async (req, res, next) => {
 		const user = await User.create({ username, password });
 
 		res.locals.user = user;
-		console.log("entered user creatwer middleware");
+		//console.log("entered user creatwer middleware");
 
 		return next();
 	} catch (err) {
@@ -34,16 +34,16 @@ userController.verifyUser = async (req, res, next) => {
 		if (!username || !password) {
 			throw new Error('Please provide a username and password');
 		}
-
+		console.log("username/pw valid in verifyUser")
 		const user = await User.findOne({ username });
-		console.log('user:', user);
+		console.log('user in database: ', user);
 		if (!user) {
 			res.send('user not found!'); //need to comfirm with frontend
 			return;
 		}
 
 		const passwordMatch = await bcrypt.compare(password, user.password);
-		console.log(passwordMatch);
+		console.log("does password match? ", passwordMatch);
 
 		if (!passwordMatch) {
 			res.send('password not match');

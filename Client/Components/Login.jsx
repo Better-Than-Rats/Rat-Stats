@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 // redux
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { updateUser, updatePassword } from '../Slices/userSlice';
 
 /**
@@ -14,30 +14,26 @@ export default function Login() {
   const dispatch = useDispatch();
   const userState = useSelector((state) => state.user.username);
   const password = useSelector((state) => state.user.password);
-  const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
   // user12
   // pw: password123
 
-  const handleLoginClick = () => {
-    const username = userState;
+  const handleLoginClick = async (e) => {
+    e.preventDefault();
+    const username = document.getElementById('username').value;
+    const pw = document.getElementById('password').value;
+    //const username = userState;
     // navigate('/homepage');
-    fetch('/user/login/', {
-      method: 'POST',
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ username, password }),
-    })
-    .then((data) => data.json())
-    .then((parsed) => {
-      if(parsed.username) {
-        // redirect here
-        // navigate('/homepage');
-      }
-    })
-    .catch(error => {
-      console.error('Error:', error);
-    }); 
+    try {
+      await fetch('/user');
+      setIsLoggedIn(true)
+      console.log("if login works, log the response here: ", response);
+    }
+    catch (err) {
+      console.log("login signup failed");
+    }
+    
+    
   };
 
   return (
@@ -68,7 +64,7 @@ export default function Login() {
             <a className="border shadow bg-red-500 justify-self-center" href={'/signup'}>Signup</a>
 
             {/* <button className="border shadow bg-green-500 justify-self-center"  onClick={handleLoginClick} >Login</button> */}
-            <button className="border shadow bg-green-500 justify-self-center" onClick={handleLoginClick} >Login</button>
+            <button className="border shadow bg-green-500 justify-self-center" onClick={handleLoginClick} >Login {!isLoggedIn ? null : <Navigate to='/homepage'/>}</button>
 
             <a className="border shadow bg-green-500 justify-self-center" href={'/oauth/login'}>Login with Tinder</a>
           </div>

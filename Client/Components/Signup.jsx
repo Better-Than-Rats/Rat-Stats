@@ -29,7 +29,7 @@ export default function Signup() {
         body: JSON.stringify({ username: username, password: pw }),
       })
       setIsLoggedIn(true)
-      console.log("if it works, log the response here: ", response);
+      console.log("if signup works, log the response here: ", response);
       //console.log("url is ", response.url);
       //const data = await response.json();
       //console.log("if it works, log the data here: ", data);
@@ -82,8 +82,7 @@ export default function Signup() {
                 required/>
               </div>
               <div className="flex flex-row justify-center p-4">
-                <a className="border shadow bg-green-500 justify-self-center" onClick={handleSignupClick} href={'/homepage'}>Create Account {!isLoggedIn ? null : <Navigate to='/homepage'/>} </a>
-                {/* {gameStart ? <GameArea /> : <div></div>} */}
+                <a className="border shadow bg-green-500 justify-self-center" onClick={handleSignupClick}>Create Account {!isLoggedIn ? null : <Navigate to='/homepage'/>} </a>
               </div>
             </div>
           </div>
